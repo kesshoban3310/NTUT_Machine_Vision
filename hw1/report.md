@@ -11,8 +11,8 @@
 
 > [!TIP]  
 > Here is our original pictures.
+> ![Img 1](./test_img/img1.jpg)
 
-![Img 1](./test_img/img1.jpg)
 ![Img 2](./test_img/img2.jpg)
 ![Img 3](./test_img/img3.jpg)
 
@@ -112,8 +112,8 @@
 > I use bilinear interpolation since it is easier for implementation.  
 > The solution is `def scaleimgwithinterp(img,scale)`, give `img` and `scale` for expect times.  
 > It will give a numpy array after resizing.  
+>![resizewi1](./result_img/img1_q2-2_double.jpg)
 
-![resizewi1](./result_img/img1_q2-2_double.jpg)
 ![resizewi2](./result_img/img2_q2-2_double.jpg)
 ![resizewi3](./result_img/img3_q2-2_double.jpg)
 
@@ -136,3 +136,25 @@
 
 
 ## My thought in hw1
+
+> [!IMPORTANT]  
+> In homework1, I learned some technique for image processing.  
+> The most impressive part is problem1-3 and problem2.  
+> For problem1-3, we need to choose a best method to generate an index image.  
+> The index image we generated needs to be reconstructed using the palette in order to  
+> restore the original colors as accurately as possible.  
+> I came up with two approaches by myself, but the results are worse than the `Median Cut`, which is the final method I used.    
+> While some classmates used K-means to solve this problem,  
+> I preferred to use a different method to find other possible solutions.  
+> In problem2, I obtain the smooth image for `2-2` by using interpolation.  
+> The image generate without interpolation has a more blocky feel.  
+> Both of them need a lot of time to generate a new image.  
+> Since I add this two function into the main part of the code, it take almost a minute to run it.  
+> I learn how to implement some technique to generate different image in this homework.  
+
+# Report link
+
+[Hw1](https://github.com/kesshoban3310/NTUT_Machine_Vision/tree/main/hw1)
+
+> [!NOTE]  
+> You can see origin link for this solution.  
