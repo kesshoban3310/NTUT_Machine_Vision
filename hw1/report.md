@@ -19,7 +19,7 @@
 ## Problem 1-1 Grayscale Image
 
 > [!IMPORTANT]  
-> In problem1-1, our goal is trying to convert an image to grayscale image.  
+> In problem1-1, our goal is trying to convert an image to a grayscale image.  
 > Our formula is `0.3 * R + 0.59 * G + 0.11 * B`.  
 > In my code, the solution function is `def rgb2gray(img)`.  
 > First, we convert the parameter `img` to a numpy array.  
@@ -32,13 +32,28 @@
 ![Gray3](./result_img/img3_q1-1.jpg)
 
 > [!TIP]  
-> Above is result images for this question.
+> Above is result images for this question.  
+> I get three grayscale images by using the formula.
 
 ## Problem 1-2 Binary Image
 
 > [!IMPORTANT]  
-> Our goal is try to build a binary image for this question.  
-> Original images are come from problem1-1.
+> Our goal is trying to build a binary image for this question.  
+> Original images are come from problem1-1.  
+> `def gray2bin(img,threshold = 128)` is the solution code for this problem.  
+> First `img` is already a numpy array since we have the return value from problem1-1.  
+> Threshold is `128` , when a color  is larger or equal to `128`, it will be `255`.  
+> Otherwise, it will be `0` .
+> I try to use `(img >= threshold).astype(np.uint8) * 255` for solution.  
+> It will convert every pixel into true or false. Then convert boolean value to an integer.  
+> If a pixel is `1` then it will be `255` ,since we have `*255` .
+
+![Bin1](./result_img/img1_q1-2.jpg)
+![Bin2](./result_img/img2_q1-2.jpg)
+![Bin3](./result_img/img3_q1-2.jpg)
+
+> [!TIP]  
+> Above is result images for this question.
 
 ## Problem 1-3 Index Image
 ## Problem 2-1 Resizing Image
