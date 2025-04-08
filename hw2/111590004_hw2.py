@@ -3,30 +3,45 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+
 matplotlib.use('TKAgg')
 
-four_mask = [[-1,0],[0,-1]]
+four_mask = [[-1, 0], [0, -1]]
 
-eight_mask = [[-1,0],[0,-1],[-1,-1]]
-def showimg(window_name,img): #Show Img
-    cv2.imshow(window_name,img)
+eight_mask = [[-1, 0], [0, -1], [-1, -1]]
+
+def gen_palette():
+    ans = np.random.randint(0, 256, (256, 3), dtype=np.uint8)
+    return ans
+
+def showimg(window_name, img):  # Show Img
+    cv2.imshow(window_name, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
 def getimg(img_path):
     return cv2.imread(img_path)
+
+
 def img2array(img):
     return np.array(img, dtype=np.int8)
+
+
 def img2grayscale(img):
     # np_arr = img[:, :, ::-1]
     gray_arr = 0.11 * img[:, :, 0] + 0.59 * img[:, :, 1] + 0.3 * img[:, :, 2]  # 2 -> B, 1 -> G, 0 -> R
     gray_arr = gray_arr.astype(np.uint8)
     return gray_arr
-def gray2bin(img,threshold = 128): # problem 1-2
+
+
+def gray2bin(img, threshold=128):  # problem 1-2
     bin_arr = (img < threshold).astype(np.uint8) * 255
     return bin_arr
 
+
 def gray2his(img):
-    his = [0]*256
+    his = [0] * 256
     for i in img:
         for j in i:
             his[j] += 1
@@ -38,46 +53,119 @@ def gray2his(img):
     plt.grid(True)
     plt.show()
 
-def imglabel(img,mask):
-    label = 1
-    n,m = len(img),len(img[0])
+
+def imgexpand(img,time = 1):
+    if(time == 0):
+        return img
+    n, m = len(img), len(img[0])
+    ans = np.zeros((n, m), dtype=np.uint8)
+    dx = [1, 0, -1, 0]
+    dy = [0, 1, 0, -1]
+    for i in range(n):
+        for j in range(m):
+            if (img[i][j] != 0):
+                ans[i, j] = 255
+                continue
+            else:
+                IsOne = False
+                for k in range(4):
+                    nx, ny = i + dx[k], j + dy[k]
+                    if (nx < 0 or ny < 0 or nx >= n or ny >= m):
+                        continue
+                    if (img[nx][ny] != 0):
+                        IsOne = True
+                if (IsOne):
+                    ans[i][j] = 255
+                    continue
+    ans = imgexpand(ans, time-1)
+    return ans
+
+
+def imgshrink(img,time = 1):
+    if(time == 0):
+        return img
+    n, m = len(img), len(img[0])
+    ans = np.zeros((n, m), dtype=np.uint8)
+    dx = [1, 0, -1, 0]
+    dy = [0, 1, 0, -1]
+    for i in range(n):
+        for j in range(m):
+            if (img[i][j] == 0):
+                continue
+            else:
+                IsZero = False
+                for k in range(4):
+                    nx, ny = i + dx[k], j + dy[k]
+                    if (nx < 0 or ny < 0 or nx >= n or ny >= m):
+                        continue
+                    if (img[nx][ny] == 0):
+                        IsZero = True
+                if (not IsZero):
+                    ans[i][j] = 255
+    ans = imgshrink(ans,time-1)
+    return ans
+
+def imgdraw(img,palette):
+    n,m = len(img), len(img[0])
+    img = img % 256
+    ans = palette[img]
+    return ans
+
+
+def imglabel(img, mask):
+    img = img.astype(np.uint16)
+    label, real_lab = 1, 0
+    n, m = len(img), len(img[0])
 
     for i in range(n):
         for j in range(m):
-            if(img[i][j]==0):
+            if (img[i][j] == 0):
                 continue
             neighbor = []
             for k in mask:
-                nx,ny = i+k[0],j+k[1]
-                if(nx<0 or ny<0 or nx>=n or ny>=m):
+                nx, ny = i + k[0], j + k[1]
+                if (nx < 0 or ny < 0 or nx >= n or ny >= m):
                     continue
-                if(img[nx][ny]==0):
+                if (img[nx][ny] == 0):
                     continue
                 neighbor.append(img[nx][ny])
-            if(len(neighbor) == 0):
-                label+=1
+            if (len(neighbor) == 0):
+                label += 1
                 img[i][j] = label
-            elif(len(neighbor) == 1):
+            elif (len(neighbor) == 1):
                 img[i][j] = neighbor[0]
             else:
                 is_same = True
-                for k in range(1,len(neighbor)):
-                    if(neighbor[k] != neighbor[k-1]):
+                lab = neighbor[0]
+                for k in range(1, len(neighbor)):
+                    if (neighbor[k] != neighbor[k - 1]):
                         is_same = False
-                        break
-                if(is_same):
+                    lab = min(lab, neighbor[k])
+                if (is_same):
                     img[i][j] = neighbor[0]
                 else:
-                    img[i][j] = neighbor[len(neighbor)-1]
+                    img[i][j] = lab
+                    real_lab = max(lab, real_lab)
+    for i in range(n):
+        for j in range(m):
+            if (img[i][j] == 0):
+                continue
+
+    print(label, real_lab)
     return img
 
 
 def main():
     input_dir = "test_img/"
     output_dir = "result_img/"
-    input_file = ["img1","img2","img3"]
-    threshold = [227,254,254]
-    output_file = ["_4","_8"]
+    input_file = ["img1", "img2", "img3"]
+    threshold = [227, 254, 254]
+    expand_time = [1,2,2]
+    shrink_time = [1,1,1]
+    expand_first = [True, False, False]
+    output_file = ["_4", "_8"]
+    color_palette = gen_palette()
+    print(len(color_palette))
     file_format = ".jpg"
     os.makedirs("result_img", exist_ok=True)
     for i in range(len(input_file)):
@@ -85,9 +173,21 @@ def main():
         img = getimg(img_str)
         np_img = img2array(img)
         gray_img = img2grayscale(np_img)
-        bin_img = gray2bin(gray_img,threshold[i])
-        # label_img_4 = imglabel(bin_img[:],four_mask)
-        showimg(input_file[i],bin_img)
+        bin_img = gray2bin(gray_img, threshold[i])
+        if(expand_first[i]):
+            process_img = imgshrink(bin_img, shrink_time[i])
+            process_img = imgexpand(process_img, expand_time[i])
+        else:
+            process_img = imgshrink(bin_img, shrink_time[i])
+            process_img = imgexpand(process_img, expand_time[i])
+
+        # print("Labeling Using bin_img: ",end="")
+        # a = imglabel(bin_img[:],four_mask)
+        print("Labeling Using Process_img: ", end="")
+        label_img_4 = imglabel(process_img[:],four_mask)
+        color_img_4 = imgdraw(label_img_4,color_palette)
+
+        showimg(input_file[i], color_img_4)
 
 
 if __name__ == "__main__":
