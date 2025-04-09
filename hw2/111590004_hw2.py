@@ -181,23 +181,31 @@ def imglabel(img, mask):
 
 def Objcounting(img):
     externel_point = [
-        [[0, 0], [0, 1]],
-        [[0, 0], [1, 0]],
-        [[0, 1], [0, 0]],
-        [[1, 0], [0, 0]],
+        [[0, 0], [0, 255]],
+        [[0, 0], [255, 0]],
+        [[0, 255], [0, 0]],
+        [[255, 0], [0, 0]],
     ]
     internel_point = [
-        [[1, 1], [1, 0]],
-        [[1, 1], [0, 1]],
-        [[1, 0], [1, 1]],
-        [[0, 1], [1, 1]],
+        [[255, 255], [255, 0]],
+        [[255, 255], [0, 255]],
+        [[255, 0], [255, 255]],
+        [[0, 255], [255, 255]],
     ]
-    e, i = 0, 0
+    externel, internel = 0, 0
     n, m = len(img), len(img[0])
     for i in range(n - 1):
         for j in range(m - 1):
             a = [[img[i][j], img[i][j + 1]], [img[i + 1][j], img[i + 1][j + 1]]]
-    return e,i
+            for k in externel_point:
+                if(a == k):
+                    externel += 1
+                    break
+            for k in internel_point:
+                if(a == k):
+                    internel += 1
+                    break
+    return externel, internel
 
 def main():
     input_dir = "test_img/"
@@ -211,6 +219,7 @@ def main():
     file_format = ".jpg"
     os.makedirs("result_img", exist_ok=True)
     for i in range(len(input_file)):
+        print(f"Processing file: {input_file[i]+file_format}")
         img_str = input_dir + input_file[i] + file_format
         img = getimg(img_str)
         np_img = img2array(img)
@@ -223,18 +232,28 @@ def main():
             process_img = imgshrink(bin_img, shrink_time[i])
             process_img = imgexpand(process_img, expand_time[i])
 
-        showimg(input_file[i], process_img)
         print("Labeling Using Process_img by 4-neighbor mask: ", end="")
         label_img_4 = imglabel(process_img[:], four_mask)
         color_img_4 = imgdraw(label_img_4, color_palette)
         showimg(input_file[i], color_img_4)
+
         print("Labeling Using Process_img by 8-neighbor mask: ", end="")
         label_img_8 = imglabel(process_img[:], eight_mask)
         color_img_8 = imgdraw(label_img_8, color_palette)
         showimg(input_file[i], color_img_8)
 
+
+        externel, internel = Objcounting(bin_img)
+        print(f"Using external and internal node method.")
+        print(f"External node: {externel}")
+        print(f"Internal node: {internel}")
+        print(f"Total cound: {(externel - internel)/4}")
+        showimg(input_file[i], process_img)
+
         np2img(color_img_4, input_file[i] + output_file[0] + file_format)
         np2img(color_img_8, input_file[i] + output_file[1] + file_format)
+        print(f"Finish process file: {input_file[i]+file_format}")
+        print("")
 
 
 if __name__ == "__main__":
