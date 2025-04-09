@@ -247,7 +247,7 @@ def main():
         print(f"Using external and internal node method.")
         print(f"External node: {externel}")
         print(f"Internal node: {internel}")
-        print(f"Total cound: {(externel - internel)/4}")
+        print(f"Total count: {(externel - internel)/4}")
         showimg(input_file[i], process_img)
 
         np2img(color_img_4, input_file[i] + output_file[0] + file_format)
