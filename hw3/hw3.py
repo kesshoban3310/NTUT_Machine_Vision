@@ -16,8 +16,8 @@ default_colors = [  # Colors for image labeling
     (128, 0, 128)  # 9: Violet / Dark Magenta
 ]
 label_colors = {i: default_colors[i] for i in range(10)}
-label_colors[-1] = (255, 255, 255)
-label_colors[-2] = (128, 128, 128)
+label_colors[-1] = (128, 128, 128)
+label_colors[-2] = (255, 255, 255)
 
 '''
 Template for Machine Vision class.
@@ -159,6 +159,11 @@ def watershedtoimg(label_img, ori_img):
 
     for i in range(h):
         for j in range(w):
+
+            if(label_img[i][j] == -1 or label_img[i][j] == -2):
+                ans[i, j] = label_colors[label_img[i, j]]
+                continue
+
             pixel = ori_img[i, j].astype(np.int32)
             label_val = list(label_colors[label_img[i, j]])
             pixel += label_val
