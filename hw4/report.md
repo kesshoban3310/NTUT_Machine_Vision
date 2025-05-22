@@ -21,11 +21,11 @@
 > [!IMPORTANT]  
 > In the first step,we need to use gaussian filter.  
 > The formula is:  
-> $$ G(x, y) = \frac{1}{2\pi\sigma^2} \exp\left(-\frac{x^2 + y^2}{2\sigma^2}\right) $$  
-> $\sigma$ is the standard deviation (controls the amount of blur).  
+> 𝐺(𝑥, 𝑦)=1/(2𝜋𝜎^2 ) 𝑒^(−(𝑥^2+𝑦^2)/(2𝜎^2 ))  
+> 𝜎 is the standard deviation (controls the amount of blur).  
 > Where 𝜎 and kernel size, you need to choose by yourself.  
 > x and y is the distance between the middle point.  
-> I choose $\sigma$ = 1.0 and kernel size is 3.  
+> I choose 𝜎 = 1.0 and kernel size is 3.  
 
 ### Gaussian Image
 
@@ -40,7 +40,7 @@
 > [!IMPORTANT]  
 > In this step,we need to use sobel operation separately x and y.  
 > Where kernel was defined in the homework announcement.  
-> And a $\theta$ graph for the slope of gradient.  
+> And a 𝜃 graph for the slope of gradient.  
 
 ### Magnitude G Image
 
@@ -53,7 +53,7 @@
 ## Step 3 Non-maximum suppression
 
 > [!IMPORTANT]  
-> In this step we need to do non-maximum suppression by $\theta$ graph from step 2.  
+> In this step we need to do non-maximum suppression by 𝜃 graph from step 2.  
 > First, we determine the gradient angle and classify it into 
 > one of the four nearest directions: 0°, 45°, 90°, or 135°.  
 > Then, if the pixel has a greater value than its neighbors in the gradient direction, it is retained.  
@@ -89,7 +89,7 @@
 ## My thought in hw4
 
 > [!TIP]  
-> The key points of this homework are selecting the kernel size and $\sigma$ in Step 1, 
+> The key points of this homework are selecting the kernel size and 𝜎 in Step 1, 
 > and determining the thresholds in Step 4.  
 > And since the result is a binary image.  
 > I have convert the test images into grayscale image first and execute these five steps.  
